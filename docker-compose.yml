@@ -11,5 +11,16 @@ services:
       POSTGRES_DB: nest
     volumes:
       - my-db:/var/lib/pos
+  test-db:
+    image: postgres:13
+    restart: always
+    ports:
+      - 32000:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
+    volumes:
+      - my-db:/var/lib/pos
 volumes:
   my-db:

@@ -1,13 +1,30 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
+import { User } from '@prisma/client';
+import { GetUser } from '../auth/decorator';
+import { JwtGuard } from '../auth/guard';
+import { EditUserDto } from './dto';
+import { UserService } from './user.service';
 
-@Controller('user')
+@UseGuards(JwtGuard)
+@Controller('users')
 export class UserController {
+    constructor(private userService: UserService){}
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get('me')
-    getMe(@Req() req:Request){
-        console.log(req)
-        return "user info"
-    }
+  @Get('me')
+  getMe(@GetUser() user: User) {
+    return user;
+  }
+
+  @Patch()
+  editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
+    console.log(userId,dto)
+    return this.userService.editUser(userId,dto)
+  }
 }
